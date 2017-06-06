@@ -38,17 +38,27 @@
 
         $text = create_template_email($order_title, $style, $fields);
 
-        $mailSMTP = new SendMailSmtpClass(ORDER_MAIL_USERNAME,
-            ORDER_MAIL_PASSWORD,
-            ORDER_MAIL_HOST,
-            ORDER_MAIL_SENDER,
-            ORDER_MAIL_PORT);
+        if (MAIL_METHOD == "SMTP") {
+            $mailSMTP = new SendMailSmtpClass(ORDER_MAIL_USERNAME,
+                ORDER_MAIL_PASSWORD,
+                ORDER_MAIL_HOST,
+                ORDER_MAIL_SENDER,
+                ORDER_MAIL_PORT);
 
-        // заголовок письма
-        $headers= "MIME-Version: 1.0\r\n";
-        $headers .= "Content-type: text/html; charset=" . ORDER_MAIL_CHARSET . "\r\n";
-        $headers .= "From: " . ORDER_MAIL_SENDER . "\r\n";
-        $result =  $mailSMTP->send(ORDER_MAIL_USERNAME, ORDER_MAIL_SENDER . ': ' . $order_title, $text, $headers);
+            // заголовок письма
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers .= "Content-type: text/html; charset=" . ORDER_MAIL_CHARSET . "\r\n";
+            $headers .= "From: " . ORDER_MAIL_SENDER . "\r\n";
+            $result =  $mailSMTP->send(ORDER_MAIL_USERNAME, ORDER_MAIL_SENDER . ': ' . $order_title, $text, $headers);
+        } else {
+            $headers = "From: " . ORDER_MAIL_SENDER . "\r\n";
+            $headers = "Reply-To: (noreply) " . ORDER_MAIL_SENDER . "\r\n";
+            $headers .= "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+            $headers .= 'X-Mailer: PHP/' . phpversion();
+            $result = mail(ORDER_MAIL_SENDER, ORDER_MAIL_DEFAULT_TITLE, $text, $headers);
+        }
+
         if($result === true) {
             $json = array(
                 'status' => 'success'

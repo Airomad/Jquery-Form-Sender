@@ -1,5 +1,6 @@
 <?php
 
+    define("MAIL_METHOD", "SMTP"); // SMTP or MAIL
     define("ORDER_MAIL_USERNAME", "~~~INSERT_HERE~~~");
     define("ORDER_MAIL_HOST", "~~~INSERT_HERE~~~");
     define("ORDER_MAIL_PORT", "~~~INSERT_HERE~~~");
